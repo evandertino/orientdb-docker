@@ -3,7 +3,7 @@ orientdb-docker
 
 A dockerfile for creating an orientdb image with :
 
-  - explicit orientdb version (1.7.8) for image cache stability
+  - explicit orientdb version (1.7.10) for image cache stability
   - init by supervisord
   - config, databases and backup folders expected to be mounted as volumes
 
@@ -17,15 +17,15 @@ Building the image on your own
 
 2. Build the image:
   ```bash
-docker built -t <YOUR_DOCKER_HUB_USER>/orientdb-1.7.8 .
+docker built -t <YOUR_DOCKER_HUB_USER>/orientdb-1.7.10 .
 ```
 
 3. Push it to your Docker Hub repository (it will ask for your login credentials):
   ```bash
-docker push <YOUR_DOCKER_HUB_USER>/orientdb-1.7.8
+docker push <YOUR_DOCKER_HUB_USER>/orientdb-1.7.10
 ```
 
-All examples below are using my own image nesrait/orientdb-1.7.8. If you build your own image please find/replace "nesrait" with your Docker Hub user.
+All examples below are using my own image bergman/orientdb-1.7.10. If you build your own image please find/replace "bergman" with your Docker Hub user.
 
 
 Running orientdb
@@ -34,7 +34,7 @@ Running orientdb
 To run the image, run:
 
 ```bash
-docker run --name orientdb -d -v <config_path>:/opt/orientdb/config -v <databases_path>:/opt/orientdb/databases -v <backup_path>:/opt/orientdb/backup -p 2424 -p 2480 nesrait/orientdb-1.7.8
+docker run --name orientdb -d -v <config_path>:/opt/orientdb/config -v <databases_path>:/opt/orientdb/databases -v <backup_path>:/opt/orientdb/backup -p 2424 -p 2480 bergman/orientdb-1.7.10
 ```
 
 The docker image contains a unconfigured orientdb installation and for running it you need to provide your own config folder from which OrientDB will read its startup settings.
@@ -64,9 +64,9 @@ Note: don't trust the remote copy of the LIVE database folder unless the server 
 
 3. Launch BTSync data containers for each of the synched folder you created giving them proper names:
   ```bash
-docker run -d --name orientdb_config -v /opt/orientdb/config nesrait/btsync /opt/orientdb/config CONFIG_FOLDER_SECRET
-docker run -d --name orientdb_databases -v /opt/orientdb/databases nesrait/btsync /opt/orientdb/databases DATABASES_FOLDER_SECRET
-docker run -d --name orientdb_backup -v /opt/orientdb/backup nesrait/btsync /opt/orientdb/backup BACKUP_FOLDER_SECRET
+docker run -d --name orientdb_config -v /opt/orientdb/config bergman/btsync /opt/orientdb/config CONFIG_FOLDER_SECRET
+docker run -d --name orientdb_databases -v /opt/orientdb/databases bergman/btsync /opt/orientdb/databases DATABASES_FOLDER_SECRET
+docker run -d --name orientdb_backup -v /opt/orientdb/backup bergman/btsync /opt/orientdb/backup BACKUP_FOLDER_SECRET
 ```
 
 4. Wait until all files have magically appeared inside your BTSync data volumes:
@@ -81,7 +81,7 @@ docker run --name orientdb -d \
             --volumes-from orientdb_databases \
             --volumes-from orientdb_backup \
             -p 2424 -p 2480 \
-            nesrait/orientdb-1.7.8
+            bergman/orientdb-1.7.10
 ```
 
 
@@ -96,16 +96,16 @@ If you're running OrientDB distributed* you won't have the problem of losing the
 Ad-hoc backups
 --------------
 
-With orientdb 1.7.8 we can now create ad-hoc backups by taking advantage of [the new backup.sh script](https://github.com/orientechnologies/orientdb/wiki/Backup-and-Restore#backup-database):
+With orientdb 1.7.10 we can now create ad-hoc backups by taking advantage of [the new backup.sh script](https://github.com/orientechnologies/orientdb/wiki/Backup-and-Restore#backup-database):
 
   - Using the orientdb_backup data container that was created above:
     ```bash
-    docker run -i -t --volumes-from orientdb_config --volumes-from orientdb_backup nesrait/orientdb-1.7.8 ./backup.sh <dburl> <user> <password> /opt/orientdb/backup/<backup_file> [<type>]
+    docker run -i -t --volumes-from orientdb_config --volumes-from orientdb_backup bergman/orientdb-1.7.10 ./backup.sh <dburl> <user> <password> /opt/orientdb/backup/<backup_file> [<type>]
     ```
 
   - Or using a host folder:
 
-    `docker run -i -t --volumes-from orientdb_config -v <host_backup_path>:/backup nesrait/orientdb-1.7.8 ./backup.sh <dburl> <user> <password> /backup/<backup_file> [<type>]`
+    `docker run -i -t --volumes-from orientdb_config -v <host_backup_path>:/backup bergman/orientdb-1.7.10 ./backup.sh <dburl> <user> <password> /backup/<backup_file> [<type>]`
 
 Either way, when the backup completes you will have the backup file located outside of the OrientDB container and read for safekeeping.
 
@@ -120,6 +120,6 @@ docker run --rm -it \
             --volumes-from orientdb_config \
             --volumes-from orientdb_databases \
             --volumes-from orientdb_backup \
-            nesrait/orientdb-1.7.8 \
+            bergman/orientdb-1.7.10 \
             /opt/orientdb/bin/console.sh
 ```
