@@ -1,4 +1,4 @@
-config_path
-databases_path
-backup_path
+config
+databases
+backup
 run
